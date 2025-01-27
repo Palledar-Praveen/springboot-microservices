@@ -1,5 +1,6 @@
 package com.Cybertrons.springboot_restful_webservices.controller;
 
+import com.Cybertrons.springboot_restful_webservices.dto.UserDto;
 import com.Cybertrons.springboot_restful_webservices.entity.User;
 import com.Cybertrons.springboot_restful_webservices.service.UserService;
 import lombok.AllArgsConstructor;
@@ -19,8 +20,8 @@ public class UserController {
     // Build create User REST API
     // http://localhost:8080/api/users/create
     @PostMapping("create")
-    public ResponseEntity<User> createUser(@RequestBody User user){
-        User userSaved = userService.createUser(user);
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto user){
+        UserDto userSaved = userService.createUser(user);
         return new ResponseEntity<>(userSaved, HttpStatus.CREATED);
     }
 
