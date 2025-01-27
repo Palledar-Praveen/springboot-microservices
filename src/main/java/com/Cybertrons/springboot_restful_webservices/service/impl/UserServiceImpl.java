@@ -2,6 +2,7 @@ package com.Cybertrons.springboot_restful_webservices.service.impl;
 
 import com.Cybertrons.springboot_restful_webservices.dto.UserDto;
 import com.Cybertrons.springboot_restful_webservices.entity.User;
+import com.Cybertrons.springboot_restful_webservices.mapper.UserMapper;
 import com.Cybertrons.springboot_restful_webservices.repository.UserRepository;
 import com.Cybertrons.springboot_restful_webservices.service.UserService;
 import lombok.AllArgsConstructor;
@@ -19,23 +20,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto createUser(UserDto userDto) {
 
-        //Convert UserDto object into JPA Entity
+       /* //Convert UserDto object into JPA Entity
         User user = new User(
                 userDto.getId(),
                 userDto.getFirstName(),
                 userDto.getLastName(),
                 userDto.getEmail()
-        );
-       User savedUser= userRepository.save(user);
+        );*/ User user = UserMapper.mapToUser(userDto);
+             User savedUser= userRepository.save(user);
 
-       // Convert User JPA Entity into UserDto
+       /*// Convert User JPA Entity into UserDto
        UserDto savedUserDto=new UserDto(
                savedUser.getId(),
                savedUser.getFirstName(),
                savedUser.getLastName(),
                savedUser.getEmail()
-       );
-        return savedUserDto;
+       );*/ UserDto savedUserDto=UserMapper.mapToUserDto(savedUser);
+            return savedUserDto;
     }
 
     @Override
