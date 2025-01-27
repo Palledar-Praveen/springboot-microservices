@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -40,23 +41,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserById(Long userId) {
-        return userRepository.findById(userId).get();
+    public UserDto getUserById(Long userId) {
+        User user=userRepository.findById(userId).get();
+        return UserMapper.mapToUserDto(user);
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDto> getAllUsers() {
+        List<User> users= userRepository.findAll();
+        return users
+                    .stream()
+                    .map(UserMapper::mapToUserDto)
+                    .collect(Collectors.toList());
     }
 
     @Override
-    public User updateUser(User user) {
+    public UserDto updateUser(UserDto user) {
         User excistingUser= userRepository.findById(user.getId()).get();
         excistingUser.setFirstName(user.getFirstName());
         excistingUser.setLastName(user.getLastName());
         excistingUser.setEmail(user.getEmail());
         User updatedUser=userRepository.save(excistingUser);
-        return updatedUser;
+        return UserMapper.mapToUserDto(updatedUser);
+
     }
 
    /* @Override
