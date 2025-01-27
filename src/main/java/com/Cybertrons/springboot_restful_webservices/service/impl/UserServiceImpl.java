@@ -6,6 +6,7 @@ import com.Cybertrons.springboot_restful_webservices.mapper.UserMapper;
 import com.Cybertrons.springboot_restful_webservices.repository.UserRepository;
 import com.Cybertrons.springboot_restful_webservices.service.UserService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,9 @@ public class UserServiceImpl implements UserService {
    // @Autowired or use @AllArgsConstructor injection
     private UserRepository userRepository;
 
+    // Injecting ModelMapper using @AllArgsConstructor injection
+    private ModelMapper modelMapper;
+
     @Override
     public UserDto createUser(UserDto userDto) {
 
@@ -27,7 +31,8 @@ public class UserServiceImpl implements UserService {
                 userDto.getFirstName(),
                 userDto.getLastName(),
                 userDto.getEmail()
-        );*/ User user = UserMapper.mapToUser(userDto);
+        );*/ //User user = UserMapper.mapToUser(userDto);
+        User user=modelMapper.map(userDto,User.class);
              User savedUser= userRepository.save(user);
 
        /*// Convert User JPA Entity into UserDto
@@ -36,23 +41,29 @@ public class UserServiceImpl implements UserService {
                savedUser.getFirstName(),
                savedUser.getLastName(),
                savedUser.getEmail()
-       );*/ UserDto savedUserDto=UserMapper.mapToUserDto(savedUser);
+       );*/ //UserDto savedUserDto=UserMapper.mapToUserDto(savedUser);
+        UserDto savedUserDto=modelMapper.map(savedUser,UserDto.class);
             return savedUserDto;
     }
 
     @Override
     public UserDto getUserById(Long userId) {
         User user=userRepository.findById(userId).get();
-        return UserMapper.mapToUserDto(user);
+        //return UserMapper.mapToUserDto(user);
+        return modelMapper.map(user,UserDto.class);
     }
 
     @Override
     public List<UserDto> getAllUsers() {
         List<User> users= userRepository.findAll();
-        return users
+       /* return users
                     .stream()
                     .map(UserMapper::mapToUserDto)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toList());*/
+        return users
+                    .stream()
+                .map((user -> modelMapper.map(user,UserDto.class)))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -62,8 +73,8 @@ public class UserServiceImpl implements UserService {
         excistingUser.setLastName(user.getLastName());
         excistingUser.setEmail(user.getEmail());
         User updatedUser=userRepository.save(excistingUser);
-        return UserMapper.mapToUserDto(updatedUser);
-
+       // return UserMapper.mapToUserDto(updatedUser);
+        return modelMapper.map(updatedUser,UserDto.class);
     }
 
    /* @Override
